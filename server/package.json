@@ -1,0 +1,16 @@
+{
+  "name": "open-contact",
+  "version": "0.0.1",
+  "private": false,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.12.2",
+    "mongoose": "^3.8.24"
+  },
+  "engines": {
+    "npm": "2.1.x",
+    "node": "0.10.x"
+  }
+}
