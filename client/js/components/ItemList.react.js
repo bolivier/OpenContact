@@ -6,9 +6,9 @@ var classNames = require('classnames');
 
 var ItemList = React.createClass({
 	propTypes: {
-    	items: React.PropTypes.array.isRequired,
-    	typeName: React.PropTypes.string.isRequired
-    },
+		items: React.PropTypes.array.isRequired,
+		typeName: React.PropTypes.string.isRequired
+	},
 	getInitialState: function () {
 		return {
 			currentElement: 0,

@@ -4,6 +4,7 @@
 
 var Constants = require('../Constants');
 var ItemList = require('./ItemList.react');
+var PersonProfile = require('./PersonProfile.react');
 var ServerActions = require('../actions/ServerActions');
 var Store = require('../stores/Store');
 
@@ -84,14 +85,7 @@ var Application = React.createClass({
 						<ItemList items={ this.getItemList() } typeName={ this.state.showList } />
 					</div>
 					<div className="seven wide column">
-						<div className="ui segment">
-							<div className="ui header">
-								Sarah Foo
-							</div>
-							<div className="ui content">
-								FOO BAR
-							</div>
-						</div>
+						<PersonProfile item={ { name: 'Foo Bar' } } />
 					</div>
 				</div>
 			</div>
