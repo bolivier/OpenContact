@@ -1,26 +1,42 @@
 /*global module */
-
-/* 
+/*
  * routing information
  */
+var express = require('express');
+var router = express.Router();
+
+var Person = require('./controllers/person');
+var Organization = require('./controllers/organization');
+
 send = function(req, res) {
 	res.send(res.locals.content);
 };
 
-module.exports = function(app, passport) {
-	// require controllers here
-	// var session = require('./controllers/session');
-	
-	//GET
-	//app.get('/api/company/:company/:location', company.get, location.get, send);
+router.get ('/', function (req, res) {
+	res.send('Hello World!');
+});
 
-	//CREATE
-	//app.post('/logout', session.postLogout);
+// People
+router.get('/people', Person.getAll); 
+router.post('/people', Person.createPerson);
+// NOT YET IMPLEMENTED
+// router.delete('/people/:id', Person.deletePerson);
+// router.put('/people/:id', Person.update);
 
-	//DELETE
-	// app.delete('/api/company/:company/:location', company.get, company.deleteLocation);
+//Organizations
+// NOT YET IMPLEMENTED
+// router.get('/orgs');
+// router.post('/orgs');
+// router.delete('/orgs/:id');
+// router.put('/orgs/:id');
+// router.get('/orgs/:id/people');
+// router.post('/orgs/:id/people');
+// router.delete('/orgs/:id/people');
 
-	//UPDATE
-	// app.put('/api/company/:company/:location', company.get, company.updateLocation);
+//Export
+// NOT YET IMPLEMENTED
+// router.get('/export/dump/:year');
 
-};
+
+// set up the router
+module.exports = router;
