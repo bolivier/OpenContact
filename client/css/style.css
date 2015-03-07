@@ -1,0 +1,9 @@
+.clickables .segment {
+	cursor: pointer;
+}
+
+.item-list {
+	height: 70vh;
+	overflow-y: scroll;
+	overflow: -moz-scrollbars-vertical;
+}
