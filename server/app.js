@@ -17,7 +17,9 @@ require('./models/person');
 
 // --- router ---
 var router = require('./routes');
-app.use('/', router);
+app.use('/api/', router);
+
+app.use(express.static('../client'));
 
 // --- Mongo --- 
 var mongoUri = process.env.MONGOLAB_URI ||
