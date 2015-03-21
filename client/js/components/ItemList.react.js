@@ -2,6 +2,8 @@
  * @jsx React.DOM
  */
 
+var Store = require('../stores/Store');
+
 var classNames = require('classnames');
 
 var ItemList = React.createClass({
@@ -16,6 +18,11 @@ var ItemList = React.createClass({
 		};
 	},
 	setCurrentSelection: function (itemIndex) {
+		if (this.props.typeName === 'people') {
+			Store.setCurrentPerson(itemIndex); // Use Index as ID for now
+		} else if (this.props.typeName === 'organizations') {
+			Store.setCurrentOrganization(itemIndex);
+		}
 		this.setState({ currentElement: itemIndex });
 	},
 	updateFilter: function (event) {
@@ -49,7 +56,7 @@ var ItemList = React.createClass({
 								<div className={cn}
 									onClick={this.setCurrentSelection.bind(
 										this, index)}
-									key={item.id}>
+									key={item._id}>
 									{ item.name }
 								</div>
 							);

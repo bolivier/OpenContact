@@ -12,10 +12,6 @@ send = function(req, res) {
 	res.send(res.locals.content);
 };
 
-router.get ('/', function (req, res) {
-	res.send('Hello World!');
-});
-
 // People
 router.get('/people', Person.getAll); 
 router.post('/people', Person.createPerson);

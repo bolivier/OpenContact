@@ -4,10 +4,22 @@
 
 var Constants = require('../Constants');
 var ItemList = require('./ItemList.react');
-var PersonProfile = require('./PersonProfile.react');
+var PersonProfile = React.createFactory(require('./PersonProfile.react'));
 var ServerActions = require('../actions/ServerActions');
 var Store = require('../stores/Store');
 
+var ObjectTypes = {
+	people: {
+		current: Store.getCurrentPerson,
+		list: Store.getSortedPeople,
+		detailsView: PersonProfile
+	},
+	organizations: {
+		current: Store.getCurrentOrganization,
+		list: Store.getSortedOrganizations,
+		detailsView: PersonProfile
+	},
+};
 
 var Application = React.createClass({
 	getInitialState: function () {
@@ -26,6 +38,13 @@ var Application = React.createClass({
 		ServerActions.loadPeople();
 		ServerActions.loadOrgs();
 
+		Store.addListener((function(e) {
+			this.forceUpdate();
+		}).bind(this), Constants.CURRENT_PERSON_CHANGE_EVENT);
+
+		Store.addListener((function(e) {
+			this.forceUpdate();
+		}).bind(this), Constants.CURRENT_ORG_CHANGE_EVENT);
 	},
 	handleShowTypeChange: function (typeName) {
 		this.setState({'showList': typeName});
@@ -33,14 +52,22 @@ var Application = React.createClass({
 	isShownType: function (typeName) {
 		return this.state.showList === typeName;
 	},
+	addUser: function () {
+		Store.createPerson();
+	},
 	getItemList: function () {
-		if (this.state.showList === 'people') {
-			return Store.getSortedPeople();
-		} else if (this.state.showList === 'organizations') {
-			return Store.getSortedOrganizations();
-		}
+		return ObjectTypes[this.state.showList].list();
+	},
+	getDetailsView: function () {
+		var currentItem = ObjectTypes[this.state.showList].current();
+		return currentItem ? ObjectTypes[this.state.showList].detailsView({
+			item: currentItem,
+			isEditing: true,
+			key: this.state.showList + currentItem._id
+		}) : null;
 	},
 	render: function () {
+		var detailsView = this.getDetailsView();
 		return (
 			<div className="ui stackable grid">
 				<div className="row">
@@ -52,7 +79,8 @@ var Application = React.createClass({
 									<i className="plus icon"></i>
 									<i className="university icon"></i>
 								</div>
-								<div className="ui positive right floated button">
+								<div className="ui positive right floated button"
+									onClick={ this.addUser } >
 									<i className="plus icon"></i>
 									<i className="user icon"></i>
 								</div>
@@ -85,7 +113,7 @@ var Application = React.createClass({
 						<ItemList items={ this.getItemList() } typeName={ this.state.showList } />
 					</div>
 					<div className="seven wide column">
-						<PersonProfile item={ { name: 'Foo Bar' } } />
+						{detailsView}
 					</div>
 				</div>
 			</div>

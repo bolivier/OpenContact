@@ -7,6 +7,9 @@ var merge = require('react/lib/merge');
 var organizations = [];
 var people = [];
 
+var currentPerson = -1;
+var currentOrganization = -1;
+
 // Cached for performance purposes
 var sortedOrgs = [];
 var sortedPeople = [];
@@ -19,6 +22,30 @@ var Store = merge(EventEmitter.prototype, {
 
 	getSortedPeople: function() {
 		return sortedPeople;
+	},
+
+	getCurrentOrganization: function() {
+		return sortedOrgs[currentOrganization];
+	},
+
+	createPerson: function() {
+		sortedPeople.splice(0, 0, { name: '' });
+		currentPerson = 0;
+		Store.emitEvent(Constants.PEOPLE_CHANGE_EVENT);
+	},
+
+	getCurrentPerson: function() {
+		return sortedPeople[currentPerson];
+	},
+
+	setCurrentOrganization: function(id) {
+		currentOrganization = id;
+		Store.emitEvent(Constants.CURRENT_ORG_CHANGE_EVENT);
+	},
+
+	setCurrentPerson: function(id) {
+		currentPerson = id;
+		Store.emitEvent(Constants.CURRENT_PERSON_CHANGE_EVENT);
 	},
 
 	emitEvent: function(event) {

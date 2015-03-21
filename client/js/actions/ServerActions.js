@@ -3,6 +3,7 @@ var Dispatcher = require('../Dispatcher');
 
 var ServerActions = {};
 
+/*
 ServerActions.loadPeople = function () {
 	Dispatcher.handleServerAction({
 		type: Constants.PEOPLE_LOADED,
@@ -30,29 +31,48 @@ ServerActions.loadPeople = function () {
 		]
 	});
 };
-
+*/
 ServerActions.loadOrgs = function () {
 	Dispatcher.handleServerAction({
 		type: Constants.ORGS_LOADED,
 		data: [
-			{ id: '123', name: 'Austin High' },
-			{ id: '124', name: 'Bowie Middle' },
-			{ id: '125', name: 'Smith Elementary' },
-			{ id: '126', name: 'Kirk Junior Academy' }
+			{ _id: '123', name: 'Austin High' },
+			{ _id: '124', name: 'Bowie Middle' },
+			{ _id: '125', name: 'Smith Elementary' },
+			{ _id: '126', name: 'Kirk Junior Academy' }
 		]
 	});
 };
 
 
-/*ServerActions.loadPeople = function () {
-	$.get('/people', function(people) {
+ServerActions.loadPeople = function () {
+	$.get('/api/people', function(people) {
 		Dispatcher.handleServerAction({
 			type: Constants.PEOPLE_LOADED,
 			data: people
 		});
-	}
+	});
 };
 
+ServerActions.savePerson = function(personObject) {
+	if (personObject._id) {
+		$.put('/api/people/' + personObject._id, function(updatedPerson) {
+			Dispatcher.handleServerAction({
+				type: Constants.PEOPLE_LOADED,
+				data: people
+			});
+		});
+	} else {
+		$.post('/api/people', function(newPerson) {
+			personObject._id = newPerson._id;
+			Dispatcher.handleServerAction({
+				type: Constants.PEOPLE_LOADED,
+				data: people
+			});
+		});
+	}
+};
+/*
 ServerActions.loadOrgs = function () {
 	$.get('/orgs', function(orgs) {
 		Dispatcher.handleServerAction({
