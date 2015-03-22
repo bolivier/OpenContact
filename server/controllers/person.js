@@ -38,9 +38,12 @@ personController.update = function (req, res, next) {
 	 	address: req.body.address,
 	 	notes: req.body.notes ? req.body.notes : []
 	};
+	var oldId = req.body._id;
 	delete req.body._id;
-	Person.update({_id: req.params.id}, {'$set': req.body});
-	res.send(req.body);
+	Person.update({_id: req.params.id}, {'$set': req.body}, function() {
+		req.body._id = oldId;
+		res.send(req.body);
+	});
 };
 
 personController.deletePerson = function (req, res, next) {
