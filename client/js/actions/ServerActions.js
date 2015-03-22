@@ -1,5 +1,6 @@
 var Constants = require('../Constants');
 var Dispatcher = require('../Dispatcher');
+var Store = require('../stores/Store'); // Might break FLUX paradigm
 
 var ServerActions = {};
 
@@ -54,20 +55,57 @@ ServerActions.loadPeople = function () {
 	});
 };
 
+ServerActions.deletePerson = function(personObject) {
+	$.ajax({
+		url: '/api/people/' + personObject._id,
+		method: 'DELETE'
+	}).done(function() {
+		var people = Store.getSortedPeople();
+		var newPeople = people.filter(function(item) {
+			return item._id != personObject._id;
+		});
+
+		// Local Update
+		Dispatcher.handleServerAction({
+			type: Constants.PEOPLE_LOADED,
+			data: newPeople
+		});
+	});
+};
+
 ServerActions.savePerson = function(personObject) {
+	function spliceIn(list, newObject) {
+		return _.map(list, function(item) {
+			return item._id == newObject._id ? personObject : item;
+		});
+	}
+
 	if (personObject._id) {
-		$.put('/api/people/' + personObject._id, function(updatedPerson) {
+		$.ajax({
+			url: '/api/people/' + personObject._id,
+			method: 'PUT',
+			data: personObject
+		}).done(function(updatedPerson) {
+			// Local Update
 			Dispatcher.handleServerAction({
 				type: Constants.PEOPLE_LOADED,
-				data: people
+				data: spliceIn(Store.getSortedPeople(), updatedPerson)
 			});
 		});
 	} else {
-		$.post('/api/people', function(newPerson) {
-			personObject._id = newPerson._id;
+		$.ajax({
+			url: '/api/people/',
+			method: 'POST',
+			data: personObject
+		}).done(function(newPerson) {
+			// Splice with null value
+			var spliced = spliceIn(Store.getSortedPeople(), personObject);
+			personObject._id = newPerson._id; // Now slip in the ID
+
+			// Local Update
 			Dispatcher.handleServerAction({
 				type: Constants.PEOPLE_LOADED,
-				data: people
+				data: spliced
 			});
 		});
 	}

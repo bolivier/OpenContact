@@ -15,9 +15,8 @@ send = function(req, res) {
 // People
 router.get('/people', Person.getAll); 
 router.post('/people', Person.createPerson);
-// NOT YET IMPLEMENTED
-// router.delete('/people/:id', Person.deletePerson);
-// router.put('/people/:id', Person.update);
+router.delete('/people/:id', Person.deletePerson);
+router.put('/people/:id', Person.update);
 
 //Organizations
 // NOT YET IMPLEMENTED

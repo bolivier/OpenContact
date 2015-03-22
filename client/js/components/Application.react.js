@@ -4,7 +4,7 @@
 
 var Constants = require('../Constants');
 var ItemList = require('./ItemList.react');
-var PersonProfile = React.createFactory(require('./PersonProfile.react'));
+var DetailsSegment = require('./DetailsSegment.react');
 var ServerActions = require('../actions/ServerActions');
 var Store = require('../stores/Store');
 
@@ -12,12 +12,16 @@ var ObjectTypes = {
 	people: {
 		current: Store.getCurrentPerson,
 		list: Store.getSortedPeople,
-		detailsView: PersonProfile
+		contentEditor: null,
+		onSave: ServerActions.savePerson,
+		onDelete: ServerActions.deletePerson
 	},
 	organizations: {
 		current: Store.getCurrentOrganization,
 		list: Store.getSortedOrganizations,
-		detailsView: PersonProfile
+		contentEditor: null,
+		onSave: ServerActions.savePerson,
+		onDelete: ServerActions.deletePerson
 	},
 };
 
@@ -58,16 +62,18 @@ var Application = React.createClass({
 	getItemList: function () {
 		return ObjectTypes[this.state.showList].list();
 	},
-	getDetailsView: function () {
-		var currentItem = ObjectTypes[this.state.showList].current();
-		return currentItem ? ObjectTypes[this.state.showList].detailsView({
-			item: currentItem,
-			isEditing: true,
-			key: this.state.showList + currentItem._id
-		}) : null;
-	},
+	getDetailsSegment: function () {
+		var currentType = ObjectTypes[this.state.showList];
+		return currentType.current() ? (
+			<DetailsSegment item={currentType.current()}
+				key={this.state.showList +
+					currentType.current()._id }
+				onSave={currentType.onSave}
+				onDelete={currentType.onDelete}>
+			</DetailsSegment>
+		) : null;
+	},//				{ React.createFactory(currentItem.contentEditor)() }
 	render: function () {
-		var detailsView = this.getDetailsView();
 		return (
 			<div className="ui stackable grid">
 				<div className="row">
@@ -113,7 +119,7 @@ var Application = React.createClass({
 						<ItemList items={ this.getItemList() } typeName={ this.state.showList } />
 					</div>
 					<div className="seven wide column">
-						{detailsView}
+						{ this.getDetailsSegment() }
 					</div>
 				</div>
 			</div>

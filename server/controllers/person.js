@@ -1,8 +1,8 @@
 /*
  * Person Controller
  */
-var _ = require("lodash");
-var mongoose = require("mongoose");
+var _ = require('lodash');
+var mongoose = require('mongoose');
 var Person = mongoose.model('Person');
 
 var personController = {};
@@ -20,10 +20,31 @@ personController.createPerson = function (req, res, next) {
 	 	name: req.body.name,
 	 	phone: req.body.phone,
 	 	email: req.body.email,
-	 	address: req.body.address
+	 	address: req.body.address,
+	 	notes: req.body.notes ? req.body.notes : []
 	};
 	var newPerson = new Person(personParams);
-	newPerson.save();
+	newPerson.save(function(err, p) {
+		if (err) {res.send(err);}
+		res.send(p);
+	});
+};
+
+personController.update = function (req, res, next) {
+	var personParams = {
+	 	name: req.body.name,
+	 	phone: req.body.phone,
+	 	email: req.body.email,
+	 	address: req.body.address,
+	 	notes: req.body.notes ? req.body.notes : []
+	};
+	delete req.body._id;
+	Person.update({_id: req.params.id}, {'$set': req.body});
+	res.send(req.body);
+};
+
+personController.deletePerson = function (req, res, next) {
+	Person.remove({_id: req.params.id}, true);
 	res.send();
 };
 
