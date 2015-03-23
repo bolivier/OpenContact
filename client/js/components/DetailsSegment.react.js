@@ -64,7 +64,7 @@ var DetailsSegment = React.createClass({
 					Edit
 				</a>
 				<div className="ui content">
-					{ user.name + user.name }
+					{ this.props.children }
 				</div>
 			</div>
 		);;
@@ -94,7 +94,7 @@ var DetailsSegment = React.createClass({
 					Delete
 				</a>
 				<div className="ui content">
-					Some random stuff here including address.
+					{ this.props.children }
 				</div>
 			</div>
 		);
